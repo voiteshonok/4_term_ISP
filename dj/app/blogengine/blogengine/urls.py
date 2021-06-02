@@ -19,8 +19,11 @@ from django.urls import include
 
 from .views import redirect_blog
 
+from users import views as  user_views
+
 urlpatterns = [
     path('', redirect_blog),
     path('admin/', admin.site.urls),
-    path('blog/', include('blog.urls'))
+    path('blog/', include('blog.urls')),
+    path('register/', user_views.register, name='register')
 ]
