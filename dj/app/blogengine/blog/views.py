@@ -55,9 +55,6 @@ class PostDeteil(ObjectDetailMixin, View):
     template = 'blog/post_detail.html'
 
     def post(self, request, slug):
-
-        # obj = get_object_or_404(Tag, slug__iexact="123")
-        # return render(request, 'blog/tag_detail.html', context={Tag.__name__.lower(): obj, 'admin_object': obj, 'detail': True})
         
         v = test()
         from django.http import HttpResponse 
