@@ -13,7 +13,6 @@ from django.core.paginator import Paginator
 
 from django.db.models import Q
 
-#from .checker import *
 from .doc.checker import *
 
 
