@@ -1,17 +1,17 @@
 from time import time, sleep
 import os, stat
 from shutil import copyfile, rmtree
-from task import Task
+from .task import Task
 import json
 
 import docker
 from docker.types import Mount
 
-from custom_types import Verdict
+from .custom_types import Verdict
 
 class Checker:
-    path_to_dockerfile = 'Dockerfile'
-    path_to_usage = 'usage.py'
+    path_to_dockerfile = 'blog/Dockerfile'
+    path_to_usage = 'blog/usage.py'
 
     def __init__(self, task, path_to_file) -> None:
         self.task = task
@@ -76,9 +76,11 @@ class Checker:
 
         rmtree(dir_name, ignore_errors=True)
 
+        return status
 
-task = Task(slug_name='test', path_to_input='data/input/echo.txt', path_to_expected_output='data/output/echo.txt', time_limit=1, memory_limit=250)
+def test():
+    task = Task(slug_name='test', path_to_input='blog/data/input/echo.txt', path_to_expected_output='blog/data/output/echo.txt', time_limit=1, memory_limit=250)
 
-ch = Checker(task, 'data/submissions/1.py')
-ch.run_submission()
+    ch = Checker(task, 'blog/data/submissions/1.py')
+    return ch.run_submission()
 

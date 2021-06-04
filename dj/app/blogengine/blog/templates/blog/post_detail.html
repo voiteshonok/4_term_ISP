@@ -11,4 +11,13 @@
     <p>
         {{ post.body }}
     </p>
+
+    {% if request.user.is_authenticated %}
+    <form class="" action="" method="post">
+        {% csrf_token %}
+
+        <button type="submit" name="button">submit</button>
+
+    </form>
+    {% endif %}
 {% endblock %}

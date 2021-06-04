@@ -13,6 +13,9 @@ from django.core.paginator import Paginator
 
 from django.db.models import Q
 
+#from .checker import *
+from .doc.checker import *
+
 
 def posts_list(request):
     search_query = request.GET.get('search', '')
@@ -52,6 +55,14 @@ class PostDeteil(ObjectDetailMixin, View):
     model = Post
     template = 'blog/post_detail.html'
 
+    def post(self, request, slug):
+
+        # obj = get_object_or_404(Tag, slug__iexact="123")
+        # return render(request, 'blog/tag_detail.html', context={Tag.__name__.lower(): obj, 'admin_object': obj, 'detail': True})
+        
+        v = test()
+        from django.http import HttpResponse 
+        return HttpResponse(f'<h1>{v}</h1>')
 
 class TagDetail(ObjectDetailMixin, View):
     model = Tag
@@ -101,3 +112,4 @@ class PostDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
     template = 'blog/post_delete_form.html'
     redirect_url = 'posts_list_url'
     raise_exception = True
+
