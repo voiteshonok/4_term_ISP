@@ -47,24 +47,30 @@ class Checker:
         client.images.remove(image.attrs['Id'], force=True)
 
     def __check_outputs(self, dirname):
-        with open(os.path.join(dirname, 'output.txt'), 'r') as output:
-            with open(os.path.join(dirname, 'expected_output.txt'), 'r') as expected_output:
-                if output.read() == expected_output.read():
-                    return Verdict.OK
-                else:
-                    return Verdict.WA
+        try:
+            with open(os.path.join(dirname, 'output.txt'), 'r') as output:
+                with open(os.path.join(dirname, 'expected_output.txt'), 'r') as expected_output:
+                    if output.read() == expected_output.read():
+                        return Verdict.OK
+                    else:
+                        return Verdict.WA
+        except:
+            return Verdict.RE
 
 
     def run_submission(self):
         dir_name = self.__make_files()
         
         self.__run_docker(dir_name)
-
-        with open(os.path.join(dir_name, 'status.json'), "r") as file:
-            try:
-                status = json.load(file)['status']
-            except:
-                status = Verdict.ML
+    
+        try:
+            with open(os.path.join(dir_name, 'status.json'), "r") as file:
+                try:
+                    status = json.load(file)['status']
+                except:
+                    status = Verdict.ML
+        except:
+            return Verdict.RE
         
         
         if status != Verdict.OK.name:
