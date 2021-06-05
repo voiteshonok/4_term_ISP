@@ -12,14 +12,20 @@
         {{ post.body }}
     </p>
 
-    <div>Note: Please start your solution with method 'sol'</div>
+    
 
     {% if request.user.is_authenticated %}
-    <form class="" action="" method="post">
-        {% csrf_token %}
+        <form class="" action="" method="post">
+            {% csrf_token %}
+            
+            <div>Note: Please start your solution with method 'sol'</div>
 
-        <button type="submit" name="button">submit</button>
+            <textarea name=code cols=80 rows=20>def sol():</textarea>
 
-    </form>
+            <button type="submit" name="button">submit</button>
+
+        </form>
+    {% else %}
+        <div>Please Log In first to submit</div>
     {% endif %}
 {% endblock %}

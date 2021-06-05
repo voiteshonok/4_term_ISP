@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models.fields import CharField
 from django.shortcuts import reverse
 from django.utils.text import slugify
+from django.contrib.auth.models import User
+from django.conf import settings
 
 from time import time
 
@@ -62,3 +64,17 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['title']
+
+
+class Submit(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    date_pub = models.DateTimeField(auto_now_add=True)
+    task = models.ForeignKey(Post, on_delete=models.CASCADE)
+    code = models.TextField(null=False, blank=True)
+    verdict = models.TextField(null=False, blank=True)
+
+    def __str__(self):
+        return f'{self.author} {self.task} {self.date_pub}'

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views import View
 from django.urls import reverse
 
-from .models import Post, Tag
+from .models import Post, Tag, Submit
 from .utils import *
 from .forms import TagForm, PostForm
 
@@ -62,6 +62,15 @@ class PostDeteil(ObjectDetailMixin, View):
 
         # from django.http import HttpResponse 
         # return HttpResponse(f'<h1>{obj.input}</h1>')
+
+        print()
+        print(request.POST.get('code'))
+        print()
+        print(request.user)
+        print()
+        print(request.POST)
+
+        submit = Submit.objects.create(author=request.user, task=obj, code=request.POST.get('code'), verdict='OK')
         
         
         v = test(obj.input.path, obj.output.path)
