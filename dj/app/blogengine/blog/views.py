@@ -77,10 +77,22 @@ class TagDetail(ObjectDetailMixin, View):
     template = 'blog/tag_detail.html'
 
 
-class TagCreate(LoginRequiredMixin, ObjectCreateMixin, View):
+class TagCreate(LoginRequiredMixin, View):
     form_model = TagForm
     template = 'blog/tag_create.html'
     raise_exception = True
+
+    def get(self, request):
+        form = self.form_model()
+        return render(request, self.template, context={'form': form})
+
+    def post(self, request):
+        bound_form = self.form_model(request.POST)
+
+        if bound_form.is_valid():
+            new_obj = bound_form.save()
+            return redirect(new_obj)
+        return render(request, self.template, context={'form': bound_form})
 
 
 def tags_list(request):
