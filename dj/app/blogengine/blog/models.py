@@ -13,11 +13,14 @@ def gen_slug(s):
 class Post(models.Model):
     title = models.CharField(max_length=150, db_index=True)
     slug = models.SlugField(max_length=150, unique=True, blank=True)
-    body = models.TextField(blank=True, db_index=True)
+    body = models.TextField(null=False, blank=True, db_index=True)
     date_pub = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts')
     input = models.FileField(null=False, blank=True)
     output = models.FileField(null=False, blank=True)
+    time_limit = models.FloatField(null=False, default=1)
+    memory_limit = models.FloatField(null=False, default=256 * 1024 * 1024)
+
 
     def get_absolute_url(self):
         return reverse('post_detail_url', kwargs={"slug": self.slug})

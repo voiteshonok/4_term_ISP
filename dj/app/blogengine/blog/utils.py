@@ -33,7 +33,8 @@ class ObjectCreateMixin:
         print(request.POST)
         print(request.FILES.get('output'))
 
-        if bound_form.is_valid() and request.FILES.get('input') is not None and request.FILES.get('input').name.endswith('.txt'):
+        if (bound_form.is_valid() and request.FILES.get('input') is not None and request.FILES.get('input').name.endswith('.txt')
+         and request.FILES.get('output') is not None and request.FILES.get('output').name.endswith('.txt')):
             new_obj = bound_form.save()
             return redirect(new_obj)
         return render(request, self.template, context={'form': bound_form})
