@@ -20,7 +20,8 @@ class Checker:
     
     def __make_files(self):
         dir_name = str(int(time()*1000))
-        os.mkdir(dir_name)
+        dir_name = os.path.join('../media_cdn', dir_name)
+        os.mkdir(os.path.join('../media_cdn', dir_name))
         copyfile(self.task.input.path, os.path.join(dir_name, 'input.txt'))
         copyfile(self.task.output.path, os.path.join(dir_name, 'expected_output.txt'))
         with open(os.path.join(dir_name, 'submission.py'), 'w') as file:

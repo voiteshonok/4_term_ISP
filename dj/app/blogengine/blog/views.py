@@ -72,11 +72,11 @@ class PostDeteil(ObjectDetailMixin, View):
 
         ch = Checker(task, request.POST.get('code'))
         verdict = ch.run_submission()
-        
+
         from django.http import HttpResponse 
 
         submit = Submit.objects.create(author=request.user, task=task, code=request.POST.get('code'), verdict=verdict.name)
-
+        return render(request, self.template, context={'form': task})
         return HttpResponse(f'<h1>{verdict}</h1>')
 
 class TagDetail(ObjectDetailMixin, View):
