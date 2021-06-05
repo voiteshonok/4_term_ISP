@@ -85,8 +85,9 @@ class Checker:
 
         return status
 
-def test():
-    task = Task(slug_name='test', path_to_input='blog/doc/data/input/echo.txt', path_to_expected_output='blog/doc/data/output/echo.txt', time_limit=1, memory_limit=250)
+def test(input, output):
+    # task = Task(slug_name='test', path_to_input='blog/doc/data/input/echo.txt', path_to_expected_output='blog/doc/data/output/echo.txt', time_limit=1, memory_limit=250)
+    task = Task(slug_name='test', path_to_input=input, path_to_expected_output=output, time_limit=1, memory_limit=250)
 
     ch = Checker(task, 'blog/doc/data/submissions/1.py')
     return ch.run_submission()

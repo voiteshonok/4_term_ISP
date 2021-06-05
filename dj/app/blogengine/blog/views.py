@@ -55,8 +55,16 @@ class PostDeteil(ObjectDetailMixin, View):
     template = 'blog/post_detail.html'
 
     def post(self, request, slug):
+
+        obj = self.model.objects.get(slug__iexact=slug)
+        # with open(obj.input.path, 'r') as file:
+        #     print(file.read())
+
+        # from django.http import HttpResponse 
+        # return HttpResponse(f'<h1>{obj.input}</h1>')
         
-        v = test()
+        
+        v = test(obj.input.path, obj.output.path)
         from django.http import HttpResponse 
         return HttpResponse(f'<h1>{v}</h1>')
 
