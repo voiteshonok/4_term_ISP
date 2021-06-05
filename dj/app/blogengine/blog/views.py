@@ -56,7 +56,7 @@ class PostDeteil(ObjectDetailMixin, View):
 
     def post(self, request, slug):
 
-        obj = self.model.objects.get(slug__iexact=slug)
+        task = self.model.objects.get(slug__iexact=slug)
         # with open(obj.input.path, 'r') as file:
         #     print(file.read())
 
@@ -70,12 +70,14 @@ class PostDeteil(ObjectDetailMixin, View):
         print()
         print(request.POST)
 
-        submit = Submit.objects.create(author=request.user, task=obj, code=request.POST.get('code'), verdict='OK')
+        ch = Checker(task, request.POST.get('code'))
+        verdict = ch.run_submission()
         
-        
-        v = test(obj.input.path, obj.output.path)
         from django.http import HttpResponse 
-        return HttpResponse(f'<h1>{v}</h1>')
+
+        submit = Submit.objects.create(author=request.user, task=task, code=request.POST.get('code'), verdict=verdict.name)
+
+        return HttpResponse(f'<h1>{verdict}</h1>')
 
 class TagDetail(ObjectDetailMixin, View):
     model = Tag

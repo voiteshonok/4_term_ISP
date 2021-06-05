@@ -1,7 +1,6 @@
 from time import time, sleep
 import os, stat
 from shutil import copyfile, rmtree
-from .task import Task
 import json
 
 import docker
@@ -14,17 +13,18 @@ class Checker:
     path_to_dockerfile = 'blog/doc/Dockerfile'
     path_to_usage = 'blog/doc/usage.py'
 
-    def __init__(self, task, path_to_file) -> None:
+    def __init__(self, task, code) -> None:
         self.task = task
-        self.path_to_file = path_to_file
+        self.code = code
 
     
     def __make_files(self):
         dir_name = str(int(time()*1000))
         os.mkdir(dir_name)
-        copyfile(self.task.path_to_input, os.path.join(dir_name, 'input.txt'))
-        copyfile(self.task.path_to_expected_output, os.path.join(dir_name, 'expected_output.txt'))
-        copyfile(self.path_to_file, os.path.join(dir_name, 'submission.py'))
+        copyfile(self.task.input.path, os.path.join(dir_name, 'input.txt'))
+        copyfile(self.task.output.path, os.path.join(dir_name, 'expected_output.txt'))
+        with open(os.path.join(dir_name, 'submission.py'), 'w') as file:
+            file.write(self.code)
         copyfile(self.path_to_dockerfile, os.path.join(dir_name, 'Dockerfile'))
         copyfile(self.path_to_usage, os.path.join(dir_name, 'usage.py'))
         with open(os.path.join(dir_name, "params.json"), "w") as file:
@@ -75,7 +75,7 @@ class Checker:
         
         if status != Verdict.OK.name:
             print(status)
-            return status
+            return Verdict(status)
     
         status = self.__check_outputs(dir_name)
 
@@ -84,11 +84,4 @@ class Checker:
         rmtree(dir_name, ignore_errors=True)
 
         return status
-
-def test(input, output):
-    # task = Task(slug_name='test', path_to_input='blog/doc/data/input/echo.txt', path_to_expected_output='blog/doc/data/output/echo.txt', time_limit=1, memory_limit=250)
-    task = Task(slug_name='test', path_to_input=input, path_to_expected_output=output, time_limit=1, memory_limit=250)
-
-    ch = Checker(task, 'blog/doc/data/submissions/1.py')
-    return ch.run_submission()
 
