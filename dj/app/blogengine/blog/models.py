@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.fields import CharField
+from django.db.models.fields import CharField, FloatField
 from django.shortcuts import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
@@ -15,11 +15,11 @@ def gen_slug(s):
 class Post(models.Model):
     title = models.CharField(max_length=150, db_index=True)
     slug = models.SlugField(max_length=150, unique=True, blank=True)
-    body = models.TextField(null=False, blank=True, db_index=True)
+    body = models.TextField(null=False, blank=False, db_index=True)
     date_pub = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts')
-    input = models.FileField(null=False, blank=True)
-    output = models.FileField(null=False, blank=True)
+    input = models.FileField(null=False, blank=False)
+    output = models.FileField(null=False, blank=False)
     time_limit = models.FloatField(null=False, default=1)
     memory_limit = models.IntegerField(null=False, default=256 * 1024 * 1024)
 
