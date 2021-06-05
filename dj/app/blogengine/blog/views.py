@@ -10,6 +10,8 @@ from .forms import TagForm, PostForm
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.contrib import messages
+from django.http import HttpResponse
 
 from django.db.models import Q
 
@@ -57,27 +59,18 @@ class PostDeteil(ObjectDetailMixin, View):
     def post(self, request, slug):
 
         task = self.model.objects.get(slug__iexact=slug)
-        # with open(obj.input.path, 'r') as file:
-        #     print(file.read())
-
-        # from django.http import HttpResponse 
-        # return HttpResponse(f'<h1>{obj.input}</h1>')
-
-        print()
-        print(request.POST.get('code'))
-        print()
-        print(request.user)
-        print()
-        print(request.POST)
 
         ch = Checker(task, request.POST.get('code'))
         verdict = ch.run_submission()
 
-        from django.http import HttpResponse 
+        if verdict == verdict.OK:
+            messages.success(request, verdict.name)
+        else:
+            messages.info(request, verdict.name)         
 
         submit = Submit.objects.create(author=request.user, task=task, code=request.POST.get('code'), verdict=verdict.name)
+
         return render(request, self.template, context={self.model.__name__.lower(): task, 'admin_object': task, 'detail': True})
-        return HttpResponse(f'<h1>{verdict}</h1>')
 
 class TagDetail(ObjectDetailMixin, View):
     model = Tag
