@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from blog.models import Submit
+
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -19,4 +21,5 @@ def register(request):
 
 @login_required
 def profile(request):
-    return render(request, 'users/profile.html')
+    user_submits = Submit.objects.filter(author=request.user)
+    return render(request, 'users/profile.html', context={'user_submits': user_submits})
