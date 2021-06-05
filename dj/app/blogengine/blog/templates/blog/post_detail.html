@@ -10,6 +10,10 @@
     </h1>
     <p>
         {{ post.body }}
+        <div>input.txt</div>
+        <div>output.txt</div>
+        <div>Memory limit: {{ post.memory_limit }} B</div>
+        <div>Time limit: {{ post.time_limit }} s</div>
     </p>
 
     {% if messages %}

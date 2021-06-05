@@ -21,7 +21,7 @@ class Post(models.Model):
     input = models.FileField(null=False, blank=True)
     output = models.FileField(null=False, blank=True)
     time_limit = models.FloatField(null=False, default=1)
-    memory_limit = models.FloatField(null=False, default=256 * 1024 * 1024)
+    memory_limit = models.IntegerField(null=False, default=256 * 1024 * 1024)
 
 
     def get_absolute_url(self):
