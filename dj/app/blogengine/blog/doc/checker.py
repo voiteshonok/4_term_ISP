@@ -1,3 +1,4 @@
+from posixpath import dirname
 from time import time, sleep
 import os, stat
 from shutil import copyfile, rmtree
@@ -58,10 +59,7 @@ class Checker:
         except:
             return Verdict.RE
 
-
-    def run_submission(self):
-        dir_name = self.__make_files()
-        
+    def __run_submision(self, dir_name):
         self.__run_docker(dir_name)
     
         try:
@@ -71,6 +69,7 @@ class Checker:
                 except:
                     status = Verdict.ML
         except:
+
             return Verdict.RE
         
         
@@ -82,6 +81,13 @@ class Checker:
 
         print(status)
 
+        return status
+
+
+    def run_submission(self):
+        dir_name = self.__make_files()
+        
+        status = self.__run_submision(dir_name)
         rmtree(dir_name, ignore_errors=True)
 
         return status

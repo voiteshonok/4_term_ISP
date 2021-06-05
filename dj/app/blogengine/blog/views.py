@@ -76,7 +76,7 @@ class PostDeteil(ObjectDetailMixin, View):
         from django.http import HttpResponse 
 
         submit = Submit.objects.create(author=request.user, task=task, code=request.POST.get('code'), verdict=verdict.name)
-        return render(request, self.template, context={'form': task})
+        return render(request, self.template, context={self.model.__name__.lower(): task, 'admin_object': task, 'detail': True})
         return HttpResponse(f'<h1>{verdict}</h1>')
 
 class TagDetail(ObjectDetailMixin, View):
