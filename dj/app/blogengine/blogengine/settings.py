@@ -132,3 +132,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'posts_list_url'
 LOGIN_URL = 'login_url'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_cdn')
