@@ -102,6 +102,14 @@ class TagCreate(LoginRequiredMixin, View):
 
 def tags_list(request):
     tags = Tag.objects.all()
+
+    for tag in tags:
+        related_posts = Post.objects.filter(tags=tag)
+        s = 0
+        for post in related_posts:
+                s += Submit.objects.filter(task=post, verdict=Verdict.OK.name).count()
+        tag.submits = s
+
     return render(request, 'blog/tags_list.html', context={'tags': tags})
 
 
