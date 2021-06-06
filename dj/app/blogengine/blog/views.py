@@ -4,14 +4,20 @@ from django.shortcuts import render
 from django.views import View
 from django.urls import reverse
 
-from .models import Post, Tag
+from .models import Post, Tag, Submit
 from .utils import *
 from .forms import TagForm, PostForm
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.contrib import messages
+from django.http import HttpResponse
 
 from django.db.models import Q
+
+from .doc.checker import *
+
+import concurrent.futures
 
 
 def posts_list(request):
@@ -52,16 +58,46 @@ class PostDeteil(ObjectDetailMixin, View):
     model = Post
     template = 'blog/post_detail.html'
 
+    def post(self, request, slug):
+
+        task = self.model.objects.get(slug__iexact=slug)
+
+        ch = Checker(task, request.POST.get('code'))
+        
+        with concurrent.futures.ThreadPoolExecutor() as executor: 
+            verdict = executor.submit(ch.run_submission).result()
+
+
+        if verdict == verdict.OK:
+            messages.success(request, verdict.name)
+        else:
+            messages.info(request, verdict.name)         
+
+        submit = Submit.objects.create(author=request.user, task=task, code=request.POST.get('code'), verdict=verdict.name)
+
+        return render(request, self.template, context={self.model.__name__.lower(): task, 'admin_object': task, 'detail': True})
 
 class TagDetail(ObjectDetailMixin, View):
     model = Tag
     template = 'blog/tag_detail.html'
 
 
-class TagCreate(LoginRequiredMixin, ObjectCreateMixin, View):
+class TagCreate(LoginRequiredMixin, View):
     form_model = TagForm
     template = 'blog/tag_create.html'
     raise_exception = True
+
+    def get(self, request):
+        form = self.form_model()
+        return render(request, self.template, context={'form': form})
+
+    def post(self, request):
+        bound_form = self.form_model(request.POST)
+
+        if bound_form.is_valid():
+            new_obj = bound_form.save()
+            return redirect(new_obj)
+        return render(request, self.template, context={'form': bound_form})
 
 
 def tags_list(request):
@@ -101,3 +137,4 @@ class PostDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
     template = 'blog/post_delete_form.html'
     redirect_url = 'posts_list_url'
     raise_exception = True
+

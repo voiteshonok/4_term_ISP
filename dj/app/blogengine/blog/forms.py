@@ -28,7 +28,7 @@ class TagForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'slug', 'body', 'tags']
+        fields = ['title', 'slug', 'body', 'tags', 'input', 'output', 'time_limit', 'memory_limit']
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
