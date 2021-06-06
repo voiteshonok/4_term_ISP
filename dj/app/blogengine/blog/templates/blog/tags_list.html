@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="mb-5">Tags:</h1>
+    <h1 class="mb-5">Tags and number of good submits:</h1>
 
     {% for tag in tags %}
-        <h3><a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a></h3>
+        <h3><a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a> - {{ tag.submits }}</h3>
     {% endfor %}
 
 {% endblock %}
