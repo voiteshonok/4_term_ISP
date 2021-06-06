@@ -31,7 +31,7 @@ class Checker:
         copyfile(self.path_to_usage, os.path.join(dir_name, 'usage.py'))
         with open(os.path.join(dir_name, "params.json"), "w") as file:
             json.dump({"time": self.task.time_limit, "memory": self.task.memory_limit}, file)
-
+        
         return dir_name
 
     def __run_docker(self, dir_name):
@@ -45,8 +45,10 @@ class Checker:
         client.containers.run(image.attrs['Id'], detach=True, mounts=[mount])
         
         sleep(self.task.time_limit * 2)
-
-        client.images.remove(image.attrs['Id'], force=True)
+        try:
+            client.images.remove(image.attrs['Id'], force=True)
+        except:
+            pass
 
     def __check_outputs(self, dirname):
         try:

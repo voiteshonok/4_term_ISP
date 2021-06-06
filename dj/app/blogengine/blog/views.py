@@ -17,6 +17,8 @@ from django.db.models import Q
 
 from .doc.checker import *
 
+import concurrent.futures
+
 
 def posts_list(request):
     search_query = request.GET.get('search', '')
@@ -61,7 +63,10 @@ class PostDeteil(ObjectDetailMixin, View):
         task = self.model.objects.get(slug__iexact=slug)
 
         ch = Checker(task, request.POST.get('code'))
-        verdict = ch.run_submission()
+        
+        with concurrent.futures.ThreadPoolExecutor() as executor: 
+            verdict = executor.submit(ch.run_submission).result()
+
 
         if verdict == verdict.OK:
             messages.success(request, verdict.name)
