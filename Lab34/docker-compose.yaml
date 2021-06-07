@@ -4,7 +4,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=django_db
       - POSTGRES_USER=admin
@@ -12,10 +12,14 @@ services:
   web:
     build: .
     working_dir: /code/app/blogengine/
-    command: python manage.py runserver 127.0.0.1:8000
+    command: python manage.py runserver 0:8000
     volumes:
       - .:/code
-    ports:
-      - "8000:8000"
     depends_on:
       - db
+    env_file:
+      - ./.env.dev
+    ports: 
+      - 8000:8000
+volumes:
+  postgres_data:
