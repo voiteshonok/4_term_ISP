@@ -69,19 +69,16 @@ class Checker:
                 try:
                     status = json.load(file)['status']
                 except:
-                    status = Verdict.ML
+                    return Verdict.ML
         except:
 
             return Verdict.RE
         
         
         if status != Verdict.OK.name:
-            print(status)
             return Verdict(status)
     
         status = self.__check_outputs(dir_name)
-
-        print(status)
 
         return status
 
