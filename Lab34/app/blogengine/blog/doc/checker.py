@@ -39,12 +39,10 @@ class Checker:
 
         image, logs = client.images.build(path='.', dockerfile=os.path.join(tempo, 'Dockerfile'), tag=int(round(time()*1000)), rm=True)
 
-        client.containers.run(image.attrs['Id'], detach=True,
+        client.containers.run(image.attrs['Id'], detach=False,
                                         volumes={f'/home/slava/tester/{dir_name}/': {"bind": f"/usr/src/app/", "mode": "rw"}
                                                 },
                                        network_disabled=True,)
-        
-        sleep(self.task.time_limit * 2)
 
         client.containers.prune()
         try:
