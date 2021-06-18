@@ -21,39 +21,41 @@ class Checker:
     
     def __make_files(self):
         dir_name = str(int(time()*1000))
-        dir_name = os.path.join('../media_cdn', dir_name)
-        os.mkdir(os.path.join('../media_cdn', dir_name))
-        copyfile(self.task.input.path, os.path.join(dir_name, 'input.txt'))
-        copyfile(self.task.output.path, os.path.join(dir_name, 'expected_output.txt'))
-        with open(os.path.join(dir_name, 'submission.py'), 'w') as file:
+        tempo = os.path.join('../media_cdn', dir_name)
+        os.mkdir(tempo)
+        copyfile(self.task.input.path, os.path.join(tempo, 'input.txt'))
+        copyfile(self.task.output.path, os.path.join(tempo, 'expected_output.txt'))
+        with open(os.path.join(tempo, 'submission.py'), 'w') as file:
             file.write(self.code)
-        copyfile(self.path_to_dockerfile, os.path.join(dir_name, 'Dockerfile'))
-        copyfile(self.path_to_usage, os.path.join(dir_name, 'usage.py'))
-        with open(os.path.join(dir_name, "params.json"), "w") as file:
+        copyfile(self.path_to_dockerfile, os.path.join(tempo, 'Dockerfile'))
+        copyfile(self.path_to_usage, os.path.join(tempo, 'usage.py'))
+        with open(os.path.join(tempo, "params.json"), "w") as file:
             json.dump({"time": self.task.time_limit, "memory": self.task.memory_limit}, file)
         
-        return dir_name
+        return dir_name, tempo
 
-    def __run_docker(self, dir_name):
+    def __run_docker(self, dir_name, tempo):
         client = docker.from_env()
 
-        mount = Mount(target='/usr/src/app/', source=os.path.join(os.getcwd(), dir_name), type='bind')
+        image, logs = client.images.build(path='.', dockerfile=os.path.join(tempo, 'Dockerfile'), tag=int(round(time()*1000)), rm=True)
 
-
-        image, logs = client.images.build(path='.', dockerfile=os.path.join(dir_name, 'Dockerfile'), tag=int(round(time()*1000)), rm=True)
-
-        client.containers.run(image.attrs['Id'], detach=True, mounts=[mount])
+        client.containers.run(image.attrs['Id'], detach=True,
+                                        volumes={f'/home/slava/tester/{dir_name}/': {"bind": f"/usr/src/app/", "mode": "rw"}
+                                                },
+                                       network_disabled=True,)
         
         sleep(self.task.time_limit * 2)
+
+        client.containers.prune()
         try:
             client.images.remove(image.attrs['Id'], force=True)
         except:
             pass
 
-    def __check_outputs(self, dirname):
+    def __check_outputs(self, dirname, tempo):
         try:
-            with open(os.path.join(dirname, 'output.txt'), 'r') as output:
-                with open(os.path.join(dirname, 'expected_output.txt'), 'r') as expected_output:
+            with open(os.path.join(tempo, 'output.txt'), 'r') as output:
+                with open(os.path.join(tempo, 'expected_output.txt'), 'r') as expected_output:
                     if output.read() == expected_output.read():
                         return Verdict.OK
                     else:
@@ -61,11 +63,11 @@ class Checker:
         except:
             return Verdict.RE
 
-    def __run_submision(self, dir_name):
-        self.__run_docker(dir_name)
+    def __run_submision(self, dir_name, tempo):
+        self.__run_docker(dir_name, tempo)
     
         try:
-            with open(os.path.join(dir_name, 'status.json'), "r") as file:
+            with open(os.path.join(tempo, 'status.json'), "r") as file:
                 try:
                     status = json.load(file)['status']
                 except:
@@ -78,16 +80,16 @@ class Checker:
         if status != Verdict.OK.name:
             return Verdict(status)
     
-        status = self.__check_outputs(dir_name)
+        status = self.__check_outputs(dir_name, tempo)
 
         return status
 
 
     def run_submission(self):
-        dir_name = self.__make_files()
+        dir_name, tempo = self.__make_files()
         
-        status = self.__run_submision(dir_name)
-        rmtree(dir_name, ignore_errors=True)
+        status = self.__run_submision(dir_name, tempo)
+        rmtree(tempo, ignore_errors=True)
 
         return status
 
