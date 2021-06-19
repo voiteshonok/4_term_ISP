@@ -43,7 +43,7 @@ class Checker:
                                         volumes={f'/home/slava/tester/{dir_name}/': {"bind": f"/usr/src/app/", "mode": "rw"}
                                                 },
                                        network_disabled=True,)
-
+                                       
         client.containers.prune()
         try:
             client.images.remove(image.attrs['Id'], force=True)

@@ -66,6 +66,7 @@ class PostDeteil(ObjectDetailMixin, View):
         
         with concurrent.futures.ThreadPoolExecutor() as executor: 
             verdict = executor.submit(ch.run_submission).result()
+        # verdict = ch.run_submission()
 
 
         if verdict == verdict.OK:
