@@ -16,7 +16,7 @@ services:
     volumes:
       - .:/code
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/home/slava/tester/:/code/app/media_cdn/"
+      - "/home/:/code/app/media_cdn/"
     depends_on:
       - db
     env_file:

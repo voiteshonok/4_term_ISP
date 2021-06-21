@@ -42,7 +42,7 @@ class Checker:
         client.containers.run(image.attrs['Id'], 
                                         mem_limit="128m",
                                         detach=False,
-                                        volumes={f'/home/slava/tester/{dir_name}/': {"bind": f"/usr/src/app/", "mode": "rw"}
+                                        volumes={f'/home/{dir_name}/': {"bind": f"/usr/src/app/", "mode": "rw"}
                                                 },
                                        network_disabled=True,)
                                        
