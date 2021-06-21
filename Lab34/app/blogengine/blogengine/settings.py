@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+import logging
 
 import os
 
@@ -143,3 +144,8 @@ LOGIN_URL = 'login_url'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_cdn')
+
+LOG_FILE = "app.log"
+LOG_LEVEL = int(os.environ.get("LOG_LEVEL", default=logging.DEBUG))
+FORMAT = '%(asctime)-15s %(message)s'
+logging.basicConfig(level=LOG_LEVEL, filename=LOG_FILE, filemode='w', format=FORMAT)

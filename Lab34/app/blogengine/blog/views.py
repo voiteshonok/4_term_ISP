@@ -19,6 +19,8 @@ from .doc.checker import *
 
 import concurrent.futures
 
+import logging
+
 
 def posts_list(request):
     posts = Post.objects.all()
@@ -72,7 +74,10 @@ class PostDeteil(ObjectDetailMixin, View):
 
         submit = Submit.objects.create(author=request.user, task=task, code=request.POST.get('code'), verdict=verdict.name)
 
+        logging.debug(f"{request.user} submitted {task} on {verdict.name}")
+
         return render(request, self.template, context={self.model.__name__.lower(): task, 'admin_object': task, 'detail': True})
+
 
 class TagDetail(ObjectDetailMixin, View):
     model = Tag
@@ -85,6 +90,7 @@ class TagCreate(LoginRequiredMixin, View):
     raise_exception = True
 
     def get(self, request):
+        logging.debug("GET on tag creation")
         form = self.form_model()
         return render(request, self.template, context={'form': form})
 
@@ -92,6 +98,7 @@ class TagCreate(LoginRequiredMixin, View):
         bound_form = self.form_model(request.POST)
 
         if bound_form.is_valid():
+            logging.debug(f"tag {request.POST['title']} was created")
             new_obj = bound_form.save()
             return redirect(new_obj)
         return render(request, self.template, context={'form': bound_form})
