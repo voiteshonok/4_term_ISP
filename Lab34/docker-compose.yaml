@@ -10,7 +10,7 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=qwerty1111
   web:
-    build: .
+    image: voiteshonok/lab34_web:3
     working_dir: /code/app/blogengine/
     command: python manage.py runserver 0:8000
     volumes:
