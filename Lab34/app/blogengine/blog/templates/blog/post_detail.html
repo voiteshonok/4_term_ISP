@@ -1,0 +1,43 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}
+    {{ post.title }} - {{block.super}}
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-5">
+        {{ post.title }}
+    </h1>
+    <p>
+        {{ post.body }}
+        <div>input.txt</div>
+        <div>output.txt</div>
+        <div>Memory limit: {{ post.memory_limit }} B</div>
+        <div>Time limit: {{ post.time_limit }} s</div>
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    
+
+    {% if request.user.is_authenticated %}
+        <form class="" action="" method="post">
+            {% csrf_token %}
+            
+            <div>Note: Please start your solution with method 'sol'</div>
+
+            <textarea name="code" cols="80" rows="15" id="textbox">def sol():</textarea>
+
+            <button type="submit" name="button">submit</button>
+
+        </form>
+    {% else %}
+        <div>Please Log In first to submit</div>
+    {% endif %}
+{% endblock %}
