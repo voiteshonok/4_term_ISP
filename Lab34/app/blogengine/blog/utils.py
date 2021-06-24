@@ -23,7 +23,7 @@ class ObjectCreateMixin:
 
     def get(self, request):
         form = self.form_model()
-        logging.debug(f"get request of {self.form_model.__name__} creation {request.GET['title']}")
+        # logging.debug(f"get request of {self.form_model.__name__} creation {request.GET['title']}")
         return render(request, self.template, context={'form': form})
 
     def post(self, request):
